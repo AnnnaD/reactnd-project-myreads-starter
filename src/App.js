@@ -1,17 +1,14 @@
 import React from 'react'
 import * as BooksAPI from './BooksAPI'
 import './App.css'
-import CurrentlyReadingShelf from './CurrentlyReadingShelf'
-import WantReadShelf from './WantReadShelf'
-import ReadShelf from './ReadShelf'
+//import CurrentlyReadingShelf from './CurrentlyReadingShelf'
+//import WantReadShelf from './WantReadShelf'
+//import ReadShelf from './ReadShelf'
+import Shelves from './Shelves'
 
 class BooksApp extends React.Component {
   state = {
     books:[],
-    book:{
-    id:'book'
-  },
-     shelf:'',
     /**
      * TODO: Instead of using this state variable to keep track of which page
      * we're on, use the URL in the browser's address bar. This will ensure that
@@ -27,12 +24,11 @@ componentDidMount(){
  })
 }
 
-/*updateBook=(books)=> {
-  this.setState((shelf)=>({
-    books: state.books.filter((book)=>book.state.shelf !== books.shelf)
+updateBook=(book,shelf)=>{
+  this.setState((state)=>({
+    books: state.books.filter((b)=>b.id !== book.id)
   }))
-}*/
-
+}
 
 
 /*componentDidUpdate(){
@@ -76,19 +72,15 @@ this.setState({shelf})
                 <div className="bookshelf">
                   <h2 className="bookshelf-title">Currently Reading</h2>
                   <div className="bookshelf-books">
-                    <CurrentlyReadingShelf shelf="currentlyReading" books={this.state.books} onUpdateBook={this.updateBook}/>
+                    <Shelves name='currentlyReading' onUpdateBook={this.updateBook} books={this.state.books} />
                   </div>
-                </div>
-                <div className="bookshelf">
-                  <h2 className="bookshelf-title">Want to Read</h2>
+                  <h2 className="bookshelf-title">want to read</h2>
                   <div className="bookshelf-books">
-                     <WantReadShelf shelf="wantToRead" books={this.state.books}/>
-                 </div>
-                </div>
-                <div className="bookshelf">
-                  <h2 className="bookshelf-title">Read</h2>
+                    <Shelves name='wantToRead' onUpdateBook={this.updateBook} books={this.state.books} />
+                  </div>
+                  <h2 className="bookshelf-title">read</h2>
                   <div className="bookshelf-books">
-                    <ReadShelf shelf="read" books={this.state.books}/>
+                    <Shelves name='read' onUpdateBook={this.updateBook} books={this.state.books} />
                   </div>
                 </div>
               </div>
@@ -98,6 +90,7 @@ this.setState({shelf})
             </div>
           </div>
         )}
+}
       </div>
     )
   }
