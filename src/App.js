@@ -1,14 +1,17 @@
 import React from 'react'
 import * as BooksAPI from './BooksAPI'
 import './App.css'
-//import CurrentlyReadingShelf from './CurrentlyReadingShelf'
-//import WantReadShelf from './WantReadShelf'
-//import ReadShelf from './ReadShelf'
-import Shelves from './Shelves'
+import Read from './Read'
+import WantRead from './WantRead'
+import CurrentlyReading from './CurrentlyReading'
+import escapeRegExp from 'escape-string-regexp'
+//import sortBy from 'sort-by'
 
 class BooksApp extends React.Component {
   state = {
     books:[],
+    query:'',
+    searchedBooks:[],
     /**
      * TODO: Instead of using this state variable to keep track of which page
      * we're on, use the URL in the browser's address bar. This will ensure that
@@ -24,18 +27,30 @@ componentDidMount(){
  })
 }
 
-updateBook=(book,shelf)=>{
-  this.setState((state)=>({
-    books: state.books.filter((b)=>b.id !== book.id)
-  }))
+updateBook = (book, shelf) => {
+	BooksAPI.update(book, shelf);
+  	const newBooks = this.state.books;
+  	for (var i = 0; i < newBooks.length; i++) {
+      if (book.id === newBooks[i].id) {
+        newBooks[i].shelf = shelf
+      }
+    }
+	this.setState({
+      books: newBooks
+  	})
 }
 
-
-/*componentDidUpdate(){
-BooksAPI.update(book,shelf).then((book,shelf)=>{
-this.setState({shelf})
-})
-}*/
+updateQuery = (query) => {
+  this.setState({ query:query.trim() })
+  let searchedBooks;
+  if(this.state.query){
+   searchedBooks=this.state.books;
+    const match = new RegExp(escapeRegExp(this.state.query),'i')
+    searchedBooks=this.state.books.filter((book)=>match.test(book.title))
+  }else{
+    console.log("doesn't work")
+  }
+}
 
 
   render() {
@@ -46,16 +61,7 @@ this.setState({shelf})
             <div className="search-books-bar">
               <a className="close-search" onClick={() => this.setState({ showSearchPage: false })}>Close</a>
               <div className="search-books-input-wrapper">
-                {/*
-                  NOTES: The search from BooksAPI is limited to a particular set of search terms.
-                  You can find these search terms here:
-                  https://github.com/udacity/reactnd-project-myreads-starter/blob/master/SEARCH_TERMS.md
-
-                  However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
-                  you don't find a specific author or title. Every search is limited by search terms.
-                */}
-                <input type="text" placeholder="Search by title or author"/>
-
+                <input type="text" placeholder="Search by title or author" value={this.state.query} onChange={(event)=>this.updateQuery(event.target.value)}/>
               </div>
             </div>
             <div className="search-books-results">
@@ -69,20 +75,9 @@ this.setState({shelf})
             </div>
             <div className="list-books-content">
               <div>
-                <div className="bookshelf">
-                  <h2 className="bookshelf-title">Currently Reading</h2>
-                  <div className="bookshelf-books">
-                    <Shelves name='currentlyReading' onUpdateBook={this.updateBook} books={this.state.books} />
-                  </div>
-                  <h2 className="bookshelf-title">want to read</h2>
-                  <div className="bookshelf-books">
-                    <Shelves name='wantToRead' onUpdateBook={this.updateBook} books={this.state.books} />
-                  </div>
-                  <h2 className="bookshelf-title">read</h2>
-                  <div className="bookshelf-books">
-                    <Shelves name='read' onUpdateBook={this.updateBook} books={this.state.books} />
-                  </div>
-                </div>
+                <Read books={this.state.books} updateBook={this.updateBook} query={this.state.query} updateQuery={this.updateQuery}/>
+                <WantRead books={this.state.books} updateBook={this.updateBook}/>
+                <CurrentlyReading books={this.state.books} updateBook={this.updateBook}/>
               </div>
             </div>
             <div className="open-search">
@@ -90,7 +85,7 @@ this.setState({shelf})
             </div>
           </div>
         )}
-}
+
       </div>
     )
   }
