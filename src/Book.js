@@ -1,5 +1,6 @@
 import React from 'react';
 import './App.css';
+//import escapeRegExp from 'escape-string-regexp'
 
 class Book extends React.Component {
 
@@ -17,8 +18,7 @@ class Book extends React.Component {
    }
 
   render() {
-
-   const { book, updateBook } = this.props;
+   const { book, updateBook, matchBook } = this.props;
 
    return (
       <li key={book.id}>

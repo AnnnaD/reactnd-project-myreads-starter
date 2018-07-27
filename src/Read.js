@@ -7,7 +7,7 @@ import Book from "./Book";
 class Read extends React.Component {
 
   render() {
-    const {books, updateBook, query, updateQuery} = this.props;
+    const {books, updateBook, query, updateQuery, matchBook} = this.props;
 
     return (
       <div className="bookshelf">
@@ -17,7 +17,7 @@ class Read extends React.Component {
            {books
               .filter(book=>book.shelf==="read")
               .map(book => (
-                 <Book key={book.id} book={book} updateBook={updateBook} query={query} updateQuery={updateQuery} />
+                 <Book key={book.id} book={book} updateBook={updateBook} query={query} updateQuery={updateQuery} matchBook={matchBook} />
        ))}
     </ol>
    </div>
@@ -26,5 +26,5 @@ class Read extends React.Component {
  }
 }
 
-
+ 
 export default Read;

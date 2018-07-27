@@ -42,18 +42,23 @@ updateBook = (book, shelf) => {
 
 updateQuery = (query) => {
   this.setState({ query:query.trim() })
+}
+
+matchBook = (book, query) => {
   let searchedBooks;
-  if(this.state.query){
-   searchedBooks=this.state.books;
-    const match = new RegExp(escapeRegExp(this.state.query),'i')
-    searchedBooks=this.state.books.filter((book)=>match.test(book.title))
-  }else{
-    console.log("doesn't work")
-  }
+      if(query){
+       searchedBooks=this.state.books;
+        const match = new RegExp(escapeRegExp(this.state.query),'i')
+        searchedBooks=this.state.books.filter((book)=>match.test(book.title))
+      }
+   	this.setState({
+      books: searchedBooks
+  	})
 }
 
 
   render() {
+
     return (
       <div className="app">
         {this.state.showSearchPage ? (
@@ -75,7 +80,7 @@ updateQuery = (query) => {
             </div>
             <div className="list-books-content">
               <div>
-                <Read books={this.state.books} updateBook={this.updateBook} query={this.state.query} updateQuery={this.updateQuery}/>
+                <Read books={this.state.books} updateBook={this.updateBook} query={this.state.query} updateQuery={this.updateQuery} matchBook={this.matchBook}/>
                 <WantRead books={this.state.books} updateBook={this.updateBook}/>
                 <CurrentlyReading books={this.state.books} updateBook={this.updateBook}/>
               </div>
